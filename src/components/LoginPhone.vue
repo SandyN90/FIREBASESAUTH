@@ -2,46 +2,55 @@
   <div>
     <h1>Login With Phone</h1>
     <div id="recaptcha-container"></div>
-    <button @click="PhoneLogin">Phone Login</button>
+    <button @click="phoneLogin">Phone Login</button>
+    <input type="number" v-model="code" />
+    <h1>{{ code }}</h1>
+    <button @click="verifyHandler">verify code</button>
   </div>
 </template>
 
 <script>
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { reactive } from "vue";
 import auth from "../firebase.js";
 export default {
-  setup() {
-    async function PhoneLogin() {
-      try {
-        window.recaptchaVerifier = new RecaptchaVerifier(
-          "recaptcha-container",
-          {},
-          auth
-        );
-        //   console.log(window.RecaptchaVerifier);
-        //   console.log("Phone Login");
-        let PhoneNumber = prompt("Enter Your phone number");
-        PhoneNumber = "+91" + PhoneNumber;
-        console.log(PhoneNumber);
-        const appVerifier = window.recaptchaVerifier;
-        // console.log(auth, PhoneNumber, appVerifier);
-        const signInPhone = await signInWithPhoneNumber(
-          auth,
-          PhoneNumber,
-          appVerifier
-        );
-        const code = await signInPhone(confirmationResult);
-        console.log("SMS sent", confirmationResult);
-      } catch (error) {
-        console.log(error);
-        window.recaptchaVerifier.render().then(function (widgetId) {
-          grecaptcha.reset(widgetId);
-        });
-      }
-    }
+  data() {
     return {
-      PhoneLogin,
+      code: "",
     };
+  },
+  methods: {
+    phoneLogin() {
+      window.RecaptchaVerifier = new RecaptchaVerifier(
+        "recaptcha-container",
+        {},
+        auth
+      );
+      const phoneNumber = "+91" + prompt("Enter the phone number");
+      const appVerifier = window.RecaptchaVerifier;
+      signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+        .then((confirmationResult) => {
+          window.confirmationResult = confirmationResult;
+          console.log("verification code is send");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    verifyHandler() {
+      confirmationResult
+        .confirm(this.code)
+        .then((result) => {
+          // User signed in successfully.
+          const user = result.user;
+          console.log("User is verified successfully");
+          // ...
+        })
+        .catch((error) => {
+          // User couldn't sign in (bad verification code?)
+          // ...
+        });
+    },
   },
 };
 </script>
