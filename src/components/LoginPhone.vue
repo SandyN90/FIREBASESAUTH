@@ -26,7 +26,7 @@ export default {
         {},
         auth
       );
-      const phoneNumber = "+91" + prompt("Enter the phone number");
+      const phoneNumber = "+91" + prompt("Enter your ten digit phone number");
       const appVerifier = window.RecaptchaVerifier;
       signInWithPhoneNumber(auth, phoneNumber, appVerifier)
         .then((confirmationResult) => {

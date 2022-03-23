@@ -130,11 +130,13 @@ function loginWithFacebook() {
           console.log(" pending cred", pendingCred);
           isMerged.value = true;
           pendingCredRef.value = pendingCred;
+          providerRef.value = getProvider(methods[0]);
         });
       }
     });
 }
 function mergeAccount() {
+  console.log(providerRef.value);
   signInWithPopup(auth, providerRef.value)
     .then((result) => {
       console.log(result.user);
@@ -142,6 +144,7 @@ function mergeAccount() {
     })
     .catch((error) => {
       console.log(error.code);
+      console.log("Error while merging");
     });
 }
 
