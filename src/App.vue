@@ -8,7 +8,8 @@
   <div>
     <router-link to="/register">register</router-link> |
     <router-link to="/">Login</router-link> |
-    <router-link to="/user">User</router-link>
+    <router-link to="/user">User</router-link> |
+    <router-link to="/helloworld">HelloWorld</router-link>
     <router-view></router-view>
   </div>
 </template>
